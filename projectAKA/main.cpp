@@ -1,0 +1,497 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+struct Book {
+    string title;
+    string isbn;
+
+    // Operator < untuk pengurutan berdasarkan judul
+    bool operator<(const Book& other) const {
+        return title < other.title;
+    }
+};
+
+// Sequential Search (Iteratif)
+int sequentialSearchIterative(const vector<Book>& books, const string& targetTitle) {
+    for (size_t i = 0; i < books.size(); i++) {
+        if (books[i].title == targetTitle) {
+            return i; // Indeks buku ditemukan
+        }
+    }
+    return -1; // Buku tidak ditemukan
+}
+
+// Sequential Search (Rekursif)
+int sequentialSearchRecursive(const vector<Book>& books, const string& targetTitle, int index = 0) {
+    if (index >= books.size()) {
+        return -1; // Buku tidak ditemukan
+    }
+    if (books[index].title == targetTitle) {
+        return index; // Indeks buku ditemukan
+    }
+    return sequentialSearchRecursive(books, targetTitle, index + 1);
+}
+
+// Binary Search (Iteratif)
+int binarySearchIterative(const vector<Book>& books, const string& targetTitle) {
+    int left = 0, right = books.size() - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (books[mid].title == targetTitle) {
+            return mid; // Indeks buku ditemukan
+        } else if (books[mid].title < targetTitle) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+    return -1; // Buku tidak ditemukan
+}
+
+// Binary Search (Rekursif)
+int binarySearchRecursive(const vector<Book>& books, const string& targetTitle, int left, int right) {
+    if (left > right) {
+        return -1; // Buku tidak ditemukan
+    }
+
+    int mid = left + (right - left) / 2;
+
+    if (books[mid].title == targetTitle) {
+        return mid; // Indeks buku ditemukan
+    } else if (books[mid].title < targetTitle) {
+        return binarySearchRecursive(books, targetTitle, mid + 1, right);
+    } else {
+        return binarySearchRecursive(books, targetTitle, left, mid - 1);
+    }
+}
+
+int main() {
+    vector<Book> books = {
+       {"Analisis Risiko", "978-535-9077289"},
+    {"Kimia Organik", "978-391-3240006"},
+    {"Basis Data", "978-558-4507793"},
+    {"Pembelajaran Mesin", "978-992-7192035"},
+    {"Arsitektur Dasar", "978-554-1091459"},
+    {"Fisika Modern", "978-575-3460669"},
+    {"Teori Komunikasi", "978-734-5338510"},
+    {"Filsafat Ilmu", "978-965-8656498"},
+    {"Pemrograman Mobile", "978-654-5684380"},
+    {"Kriptografi", "978-658-6485399"},
+    {"Manajemen Proyek IT", "978-647-4953541"},
+    {"Ilmu Politik", "978-926-2703284"},
+    {"Komputasi Awan", "978-141-1167442"},
+    {"Sejarah Indonesia", "978-550-6968673"},
+    {"Ilmu Politik", "978-330-1424014"},
+    {"Kalkulus Lanjut", "978-203-4963492"},
+    {"Analisis Risiko", "978-501-5078745"},
+    {"Fisika Dasar", "978-200-6684503"},
+    {"Pemrograman Python", "978-124-9278269"},
+    {"Fotografi Dasar", "978-437-5854694"},
+    {"Teknik Elektro", "978-306-1965736"},
+    {"Kewirausahaan", "978-440-8372446"},
+    {"Metodologi Penelitian", "978-218-5483614"},
+    {"Seni Rupa Modern", "978-337-9635152"},
+    {"Sejarah Indonesia", "978-500-6704355"},
+    {"Kimia Organik", "978-552-1812034"},
+    {"Pemrograman Python", "978-239-4094758"},
+    {"Pemasaran Digital", "978-123-7405596"},
+    {"Seni Rupa Modern", "978-418-8323846"},
+    {"Pembelajaran Mesin", "978-402-3442526"},
+    {"Pemrograman R", "978-834-9887226"},
+    {"Pemrograman Web", "978-164-5963524"},
+    {"Sejarah Dunia", "978-422-6847239"},
+    {"Robotika", "978-469-5533893"},
+    {"Jaringan Nirkabel", "978-139-9416929"},
+    {"Mekanika Teknik", "978-384-4090523"},
+    {"Jaringan Nirkabel", "978-717-2556790"},
+    {"Kecerdasan Buatan", "978-354-1567956"},
+    {"Kecerdasan Buatan", "978-450-7074154"},
+    {"Analisis Numerik", "978-886-6923956"},
+    {"Manajemen Keuangan", "978-841-9894543"},
+    {"Teknik Elektro", "978-423-5601761"},
+    {"Keamanan Siber", "978-772-9592374"},
+    {"Ekonomi Mikro", "978-321-1606070"},
+    {"Pemasaran Strategis", "978-277-6621935"},
+    {"Data Science", "978-208-8942493"},
+    {"Teknologi Dasar", "978-315-5228673"},
+    {"Manajemen Proyek IT", "978-802-6151041"},
+    {"Ilmu Politik", "978-696-9313542"},
+    {"Literatur Lanjutan", "978-318-8923225"},
+    {"Teori Komunikasi", "978-872-9716151"},
+    {"Teknologi Dasar", "978-995-8848786"},
+    {"Kecerdasan Buatan", "978-554-3536514"},
+    {"Analisis Numerik", "978-176-8177871"},
+    {"Penulisan Kreatif", "978-864-1906154"},
+    {"Kimia Organik", "978-988-9721987"},
+    {"Pemrograman Java", "978-186-3739750"},
+    {"Kalkulus Lanjut", "978-105-8349645"},
+    {"Akuntansi Dasar", "978-201-5640934"},
+    {"Teori Musik", "978-146-8610586"},
+    {"Pengantar Filsafat", "978-161-5804003"},
+    {"Fotografi Dasar", "978-844-8625833"},
+    {"Sistem Pakar", "978-785-3049630"},
+    {"Etika Bisnis", "978-206-9221086"},
+    {"Pengolahan Citra", "978-580-9176797"},
+    {"Akuntansi Dasar", "978-967-8260559"},
+    {"Pemrograman Python", "978-187-2375166"},
+    {"Robotika", "978-278-7785323"},
+    {"Sistem Operasi", "978-822-4851557"},
+    {"Jaringan Komputer", "978-295-7315510"},
+    {"Manajemen Keuangan", "978-488-8117275"},
+    {"Kewirausahaan", "978-957-1498621"},
+    {"Jaringan Komputer", "978-161-9378467"},
+    {"Analisis Numerik", "978-947-9137769"},
+    {"Manajemen Proyek IT", "978-477-3265883"},
+    {"Kalkulus Lanjut", "978-364-9698181"},
+    {"Seni Rupa Modern", "978-193-6279760"},
+    {"Keamanan Jaringan", "978-835-1270264"},
+    {"Manajemen Keuangan", "978-799-5185806"},
+    {"Kecerdasan Buatan", "978-590-7108055"},
+    {"Pemasaran Strategis", "978-773-7220761"},
+    {"Fisika Dasar", "978-898-6746229"},
+    {"Sosiologi Dasar", "978-513-5785658"},
+    {"Teknologi Dasar", "978-835-9161858"},
+    {"Manajemen Proyek IT", "978-392-2234464"},
+    {"Etika Bisnis", "978-649-1902513"},
+    {"Seni Rupa Modern", "978-935-3116792"},
+    {"Teori Probabilitas", "978-421-6371697"},
+    {"Manajemen Keuangan", "978-264-1744016"},
+    {"Filsafat Ilmu", "978-894-7343944"},
+    {"Manajemen Operasi", "978-863-1090536"},
+    {"Keamanan Jaringan", "978-854-7737700"},
+    {"Ilmu Politik", "978-603-7970789"},
+    {"Analisis Risiko", "978-290-6204240"},
+    {"Biologi Umum", "978-387-7050098"},
+    {"Hukum Internasional", "978-969-8376101"},
+    {"Sejarah Dunia", "978-669-8594050"},
+    {"Pengantar Kriptografi", "978-458-3148529"},
+    {"Akuntansi Dasar", "978-542-1583304"},
+    {"Pengantar Filsafat", "978-704-3028687"},
+    {"Robotika", "978-981-5830406"},
+    {"Kalkulus Lanjut", "978-390-5060685"},
+    {"Pemasaran Strategis", "978-149-9664974"},
+    {"Pemrograman C++", "978-591-8201784"},
+    {"Ilmu Hukum", "978-987-5230426"},
+    {"Psikologi Umum", "978-349-1175961"},
+    {"Kalkulus Lanjut", "978-970-7790905"},
+    {"Keamanan Siber", "978-276-2237788"},
+    {"Psikologi Umum", "978-616-6274796"},
+    {"Pemasaran Digital", "978-800-6665038"},
+    {"Pemrograman R", "978-163-5420542"},
+    {"Sosiologi Dasar", "978-819-1431030"},
+    {"Ilmu Hukum", "978-581-8902631"},
+    {"Internet of Things", "978-955-4272492"},
+    {"Arsitektur Dasar", "978-206-8600996"},
+    {"Kimia Organik", "978-128-7968357"},
+    {"Etika Profesional", "978-253-6581042"},
+    {"Teknik Elektro", "978-442-4984370"},
+    {"Manajemen Proyek IT", "978-367-2433961"},
+    {"Manajemen Operasi", "978-277-8481364"},
+    {"Pengolahan Citra", "978-306-2507682"},
+    {"Sosiologi Dasar", "978-217-5153796"},
+    {"Teori Komunikasi", "978-219-4618679"},
+    {"Pengolahan Citra", "978-613-7358900"},
+    {"Filsafat Ilmu", "978-634-7891110"},
+    {"Akuntansi Dasar", "978-206-6238610"},
+    {"Sejarah Teknologi", "978-138-4632068"},
+    {"Pengantar Filsafat", "978-163-4522617"},
+    {"Seni Rupa Modern", "978-722-8382385"},
+    {"Kriptografi", "978-532-3223189"},
+    {"Manajemen Proyek IT", "978-172-4060668"},
+    {"Akuntansi Dasar", "978-185-4831760"},
+    {"Hukum Internasional", "978-340-4748655"},
+    {"Pemrograman Python", "978-514-2131977"},
+    {"Pemrograman Python", "978-286-6716550"},
+    {"Algoritma dan Struktur Data", "978-483-3575666"},
+    {"Ekonomi Mikro", "978-268-3770951"},
+    {"Algoritma dan Struktur Data", "978-475-3320877"},
+    {"Algoritma Pemrograman", "978-275-4206341"},
+    {"Teknik Sipil", "978-794-6714438"},
+    {"Fotografi Dasar", "978-577-9479791"},
+    {"Algoritma Pemrograman", "978-860-5509355"},
+    {"Pemrograman R", "978-974-7301935"},
+    {"Pemrograman Web", "978-561-8892513"},
+    {"Sistem Operasi", "978-688-4538836"},
+    {"Desain Grafis", "978-953-4723829"},
+    {"Pemrograman Python", "978-781-2282188"},
+    {"Pemasaran Digital", "978-955-9100622"},
+    {"Pembelajaran Mesin", "978-694-5489057"},
+    {"Teori Komunikasi", "978-665-4988108"},
+    {"Sosiologi Dasar", "978-517-1391564"},
+    {"Manajemen Operasi", "978-210-4460770"},
+    {"Mekanika Teknik", "978-563-4251521"},
+    {"Pengantar Kriptografi", "978-479-3461782"},
+    {"Teknik Elektro", "978-152-1554088"},
+    {"Ekonomi Mikro", "978-482-3926411"},
+    {"Etika Profesional", "978-144-4237819"},
+    {"Kalkulus Lanjut", "978-383-1020187"},
+    {"Komputasi Awan", "978-743-9497210"},
+    {"Sosiologi Dasar", "978-266-6345341"},
+    {"Multimedia Interaktif", "978-727-5070764"},
+    {"Pemrograman R", "978-250-9468933"},
+    {"Psikologi Umum", "978-111-2335324"},
+    {"Robotika", "978-637-9399864"},
+    {"Teknik Sipil", "978-479-7885261"},
+    {"Pemrograman Dasar", "978-653-7471141"},
+    {"Pengantar Statistik", "978-882-6162491"},
+    {"Multimedia Interaktif", "978-750-2081371"},
+    {"Jaringan Nirkabel", "978-620-1642343"},
+    {"Ilmu Hukum", "978-836-3528617"},
+    {"Algoritma Pemrograman", "978-195-9838514"},
+    {"Ekonomi Makro", "978-925-2364262"},
+    {"Sejarah Dunia", "978-646-2491325"},
+    {"Mekanika Teknik", "978-630-5567141"},
+    {"Sejarah Indonesia", "978-430-1621519"},
+    {"Big Data", "978-743-2604448"},
+    {"Sistem Pakar", "978-846-6436291"},
+    {"Sejarah Teknologi", "978-308-4182545"},
+    {"Arsitektur Dasar", "978-790-4682404"},
+    {"Robotika", "978-240-6067348"},
+    {"Jaringan Nirkabel", "978-935-4166325"},
+    {"Manajemen Sumber Daya", "978-641-1759175"},
+    {"Mekanika Teknik", "978-609-7710379"},
+    {"Akuntansi Dasar", "978-514-5122481"},
+    {"Fotografi Dasar", "978-707-9924197"},
+    {"Algoritma dan Struktur Data", "978-288-1270598"},
+    {"Manajemen Proyek IT", "978-693-2855983"},
+    {"Pemasaran Strategis", "978-913-5556707"},
+    {"Teori Komunikasi", "978-267-6588016"},
+    {"Pengantar Statistik", "978-939-1793451"},
+    {"Jaringan Nirkabel", "978-903-7788544"},
+    {"Analisis Data", "978-911-7420589"},
+    {"Keamanan Jaringan", "978-290-4737524"},
+    {"Sejarah Dunia", "978-154-5923820"},
+    {"Pemasaran Strategis", "978-239-1920995"},
+    {"Fotografi Dasar", "978-763-3237216"},
+    {"Jaringan Komputer", "978-392-5840695"},
+    {"Sejarah Indonesia", "978-448-3079062"},
+    {"Data Science", "978-463-1945670"},
+    {"Teori Musik", "978-581-2574506"},
+    {"Manajemen Keuangan", "978-848-6288748"},
+    {"Teknologi Dasar", "978-569-4958615"},
+    {"Statistika Terapan", "978-651-5215991"},
+    {"Desain Grafis", "978-728-7937654"},
+    {"Pemasaran Digital", "978-609-1071118"},
+    {"Pemrograman Web", "978-861-7374164"},
+    {"Jaringan Nirkabel", "978-969-6124606"},
+    {"Akuntansi Dasar", "978-124-4051095"},
+    {"Desain Grafis", "978-911-8752383"},
+    {"Fisika Modern", "978-372-2196507"},
+    {"Teori Musik", "978-191-2807233"},
+    {"Pemasaran Strategis", "978-199-6533564"},
+    {"Hukum Internasional", "978-336-1393740"},
+    {"Algoritma Pemrograman", "978-812-8185789"},
+    {"Hukum Internasional", "978-539-1530839"},
+    {"Psikologi Umum", "978-940-7048478"},
+    {"Biologi Umum", "978-718-2217601"},
+    {"Jaringan Nirkabel", "978-915-5833188"},
+    {"Ekonomi Mikro", "978-273-1796128"},
+    {"Jaringan Nirkabel", "978-238-6876374"},
+    {"Teknologi Dasar", "978-101-8899201"},
+    {"Arsitektur Dasar", "978-610-1555569"},
+    {"Pemrograman Dasar", "978-249-5761353"},
+    {"Pengantar Statistik", "978-150-3606299"},
+    {"Pemasaran Digital", "978-254-3104606"},
+    {"Analisis Data", "978-371-9891031"},
+    {"Hukum Internasional", "978-660-7765422"},
+    {"Teknik Elektro", "978-790-8123829"},
+    {"Fisika Modern", "978-143-1395074"},
+    {"Ilmu Politik", "978-874-8768725"},
+    {"Data Science", "978-515-4086363"},
+    {"Desain Grafis", "978-749-7630871"},
+    {"Algoritma dan Struktur Data", "978-337-3321178"},
+    {"Fotografi Dasar", "978-156-5925084"},
+    {"Ekonomi Mikro", "978-287-7993712"},
+    {"Basis Data", "978-840-4057010"},
+    {"Jaringan Komputer", "978-676-8385708"},
+    {"Penulisan Kreatif", "978-339-1601976"},
+    {"Manajemen Operasi", "978-244-9108859"},
+    {"Sejarah Indonesia", "978-480-9882260"},
+    {"Fisika Modern", "978-341-9168014"},
+    {"Statistika Terapan", "978-564-2218041"},
+    {"Akuntansi Dasar", "978-756-4415525"},
+    {"Etika Bisnis", "978-979-6991087"},
+    {"Manajemen Operasi", "978-569-6842364"},
+    {"Big Data", "978-844-6115721"},
+    {"Pemrograman Web", "978-237-8644043"},
+    {"Sosiologi Dasar", "978-387-9505982"},
+    {"Pemrograman C++", "978-817-1495357"},
+    {"Literatur Lanjutan", "978-838-7146816"},
+    {"Sejarah Indonesia", "978-441-9409593"},
+    {"Algoritma Pemrograman", "978-330-4803513"},
+    {"Manajemen Keuangan", "978-599-8810968"},
+    {"Akuntansi Dasar", "978-493-9450132"},
+    {"Robotika", "978-214-7260329"},
+    {"Etika Profesional", "978-322-5340856"},
+    {"Statistika Lanjut", "978-354-4004310"},
+    {"Pemrograman C++", "978-234-4680974"},
+    {"Akuntansi Dasar", "978-667-4491984"},
+    {"Manajemen Operasi", "978-769-6227883"},
+    {"Manajemen Proyek IT", "978-907-8273062"},
+    {"Arsitektur Dasar", "978-765-8202409"},
+    {"Ilmu Hukum", "978-566-7406021"},
+    {"Analisis Data", "978-990-8809896"},
+    {"Fisika Dasar", "978-192-8395668"},
+    {"Sejarah Dunia", "978-319-6149819"},
+    {"Pemrograman Mobile", "978-362-6305396"},
+    {"Teori Musik", "978-372-4126056"},
+    {"Pemrograman Dasar", "978-582-1724746"},
+    {"Teknik Sipil", "978-770-6219134"},
+    {"Literatur Lanjutan", "978-983-9935984"},
+    {"Pemrograman Java", "978-189-4265330"},
+    {"Teknik Elektro", "978-938-8960210"},
+    {"Sejarah Teknologi", "978-297-9858037"},
+    {"Statistika Lanjut", "978-810-8742799"},
+    {"Ilmu Politik", "978-505-7201664"},
+    {"Pengantar Statistik", "978-160-6602464"},
+    {"Kewirausahaan", "978-416-6096835"},
+    {"Manajemen Keuangan", "978-456-6938492"},
+    {"Teknik Elektro", "978-870-3577003"},
+    {"Ekonomi Makro", "978-645-2582836"},
+    {"Literatur Lanjutan", "978-804-6688358"},
+    {"Pemasaran Digital", "978-719-3526856"},
+    {"Manajemen Proyek IT", "978-995-2227288"},
+    {"Jaringan Komputer", "978-139-2992341"},
+    {"Manajemen Keuangan", "978-558-8595996"},
+    {"Biologi Umum", "978-588-9411778"},
+    {"Teori Komunikasi", "978-575-6258640"},
+    {"Jaringan Nirkabel", "978-464-5609902"},
+    {"Kimia Organik", "978-753-3021300"},
+    {"Manajemen Keuangan", "978-846-6146039"},
+    {"Sistem Operasi", "978-785-7810941"},
+    {"Fotografi Dasar", "978-317-5088319"},
+    {"Sistem Operasi", "978-358-9141647"},
+    {"Kewirausahaan", "978-196-6986026"},
+    {"Sistem Pakar", "978-895-9795472"},
+    {"Kewirausahaan", "978-321-9658371"},
+    {"Etika Bisnis", "978-854-6702459"},
+    {"Data Science", "978-757-2433926"},
+    {"Fisika Dasar", "978-517-6098165"},
+    {"Sejarah Indonesia", "978-670-4690806"},
+    {"Teori Musik", "978-500-3443429"},
+    {"Pengantar Kriptografi", "978-390-6628259"},
+    {"Manajemen Operasi", "978-220-8902749"},
+    {"Pengantar Filsafat", "978-396-6949287"},
+    {"Big Data", "978-242-7647840"},
+    {"Teori Probabilitas", "978-734-4551932"},
+    {"Algoritma Pemrograman", "978-941-2402725"},
+    {"Manajemen Sumber Daya", "978-332-6878225"},
+    {"Jaringan Komputer", "978-720-5101393"},
+    {"Statistika Terapan", "978-124-7009650"},
+    {"Arsitektur Dasar", "978-234-3061466"},
+    {"Pemrograman Mobile", "978-288-9224974"},
+    {"Psikologi Umum", "978-153-8883978"},
+    {"Fisika Modern", "978-693-4829367"},
+    {"Analisis Numerik", "978-272-3340194"},
+    {"Filsafat Ilmu", "978-235-2153534"},
+    {"Pemrograman R", "978-253-3929672"},
+    {"Teori Musik", "978-524-8240573"},
+    {"Pengantar Statistik", "978-863-9407035"},
+    {"Desain Grafis", "978-247-8016496"},
+    {"Algoritma Pemrograman", "978-890-1638015"},
+    {"Pengantar Statistik", "978-368-6858782"},
+    {"Sosiologi Dasar", "978-272-7931110"},
+    {"Pengantar Filsafat", "978-535-3998635"},
+    {"Analisis Risiko", "978-846-3971440"},
+    {"Kimia Organik", "978-907-1924741"},
+    {"Jaringan Komputer", "978-793-3017744"},
+    {"Hukum Internasional", "978-439-4214767"},
+    {"Kalkulus Lanjut", "978-653-2381506"},
+    {"Sosiologi Dasar", "978-846-6292453"},
+    {"Statistika Lanjut", "978-636-7343643"},
+    {"Pengantar Kriptografi", "978-491-2867027"},
+    {"Arsitektur Dasar", "978-247-8793304"},
+    {"Kimia Organik", "978-419-9438334"},
+    {"Jaringan Nirkabel", "978-586-8221702"},
+    {"Ekonomi Mikro", "978-224-6236241"},
+    {"Pemrograman Java", "978-746-5626333"},
+    {"Pemasaran Strategis", "978-306-6881625"},
+    {"Teknik Elektro", "978-554-5613196"},
+    {"Fotografi Dasar", "978-334-5971557"},
+    {"Analisis Data", "978-569-5860146"},
+    {"Penulisan Kreatif", "978-428-9719611"},
+    {"Multimedia Interaktif", "978-854-2122251"},
+    {"Algoritma dan Struktur Data", "978-727-1522917"},
+    {"Komputasi Awan", "978-528-7013752"},
+    {"Pemrograman R", "978-856-2022998"},
+    {"Mekanika Teknik", "978-746-4664412"},
+    {"Statistika Lanjut", "978-232-5206727"},
+    {"Pembelajaran Mesin", "978-119-6443024"},
+    {"Etika Profesional", "978-973-2501963"},
+    {"Statistika Lanjut", "978-178-2041024"},
+    {"Komputasi Awan", "978-305-4661933"},
+    {"Etika Profesional", "978-484-4329030"},
+    {"Sejarah Dunia", "978-399-5843002"},
+    {"Multimedia Interaktif", "978-642-8676283"},
+    {"Kalkulus Lanjut", "978-890-7787648"},
+    {"Filsafat Ilmu", "978-750-6996358"},
+    {"Pemrograman Dasar", "978-986-9391591"},
+    {"Sosiologi Dasar", "978-766-9840286"},
+    {"Pengantar Statistik", "978-680-1388908"},
+    {"Pemrograman Web", "978-265-3045747"},
+    {"Sejarah Teknologi", "978-574-2983334"},
+    {"Pemrograman Java", "978-222-9022564"},
+    {"Teknik Elektro", "978-634-3783793"},
+    {"Manajemen Keuangan", "978-433-9139190"},
+    {"Ilmu Hukum", "978-588-8005522"},
+    {"Komputasi Awan", "978-217-3873825"},
+    {"Internet of Things", "978-668-8000425"},
+    {"Pemrograman Dasar", "978-559-6160783"},
+    {"Pemasaran Strategis", "978-925-4893180"},
+    {"Pembelajaran Mesin", "978-326-6273747"},
+    {"Sistem Operasi", "978-195-4148408"},
+    {"Pengantar Kriptografi", "978-137-3884584"},
+    {"Analisis Numerik", "978-900-3558941"},
+    {"Penulisan Kreatif", "978-348-7801378"},
+    {"Sejarah Indonesia", "978-848-3472075"},
+    {"Pengolahan Citra", "978-992-4345812"},
+    {"Teori Komunikasi", "978-427-3096682"},
+    {"Kecerdasan Buatan", "978-113-9225237"},
+    {"Pemrograman Java", "978-935-5355973"},
+    {"Akuntansi Dasar", "978-736-1456850"},
+    {"Kalkulus Lanjut", "978-414-4931769"},
+    {"Akuntansi Dasar", "978-854-3321862"},
+    {"Pengantar Kriptografi", "978-910-3462350"},
+    {"Metodologi Penelitian", "978-594-7362787"},
+    {"Pemrograman R", "978-253-7141209"},
+    {"Pengantar Kriptografi", "978-221-5978464"},
+    {"Fotografi Dasar", "978-783-4649561"},
+    {"Analisis Numerik", "978-469-6609646"},
+    {"Etika Bisnis", "978-259-4811838"},
+    {"Big Data", "978-161-1537114"},
+    {"Sejarah Dunia", "978-843-3932608"},
+    {"Data Science", "978-405-4719454"},
+    {"Etika Profesional", "978-604-4604881"},
+    {"Ekonomi Mikro", "978-946-8809788"},
+    {"Pengantar Statistik", "978-838-6203419"},
+    {"Desain Grafis", "978-993-3202326"},
+    {"Manajemen Operasi", "978-783-7209053"},
+    {"Sejarah Dunia", "978-867-4261049"}
+    };
+
+
+    string targetTitle = "Desain Grafis";
+
+    // Pencarian Sequential Search
+    int index = sequentialSearchIterative(books, targetTitle);
+    cout << "Sequential Search Iterative: " << (index != -1 ? to_string(index) : "Not Found") << endl;
+
+    index = sequentialSearchRecursive(books, targetTitle);
+    cout << "Sequential Search Recursive: " << (index != -1 ? to_string(index) : "Not Found") << endl;
+
+    // Mengurutkan data buku berdasarkan judul untuk Binary Search
+    sort(books.begin(), books.end());
+
+    // Pencarian Binary Search
+    index = binarySearchIterative(books, targetTitle);
+    cout << "Binary Search Iterative: " << (index != -1 ? to_string(index) : "Not Found") << endl;
+
+    index = binarySearchRecursive(books, targetTitle, 0, books.size() - 1);
+    cout << "Binary Search Recursive: " << (index != -1 ? to_string(index) : "Not Found") << endl;
+
+    return 0;
+};
